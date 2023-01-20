@@ -128,16 +128,20 @@ def main():
             min_value=MIN_DATE,
             max_value=END_DATE_DEFAULT,
         )
-
+    
     asset_id = get_asset_id_by_symbol(assets, symbol=choice)
-    historical_raw_data = fetch_history_data(
-        asset_id, get_unix_time(start_date_input), get_unix_time(end_date_input)
-    )
-    hist_plot = create_historical_fig(
-        historical_raw_data, start_date_input, end_date_input
-    )
+    # TO-DO: implement automatic setting of restrictions when choosing a date range
+    try:
+        historical_raw_data = fetch_history_data(asset_id, start_date_input, end_date_input)
+        historical_df = get_historical_df(historical_raw_data)
+        summary_line = generate_summary(historical_df, start_date_input, end_date_input)
+        hist_plot = create_historical_fig(historical_df, start_date_input, end_date_input)
+        
+        st.write(summary_line)
+        st.plotly_chart(hist_plot)
+    except KeyError:
+        st.write("You must select the correct date range")
 
-    st.plotly_chart(hist_plot)
 
 
 if __name__ == "__main__":
