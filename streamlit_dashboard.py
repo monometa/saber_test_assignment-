@@ -81,6 +81,13 @@ def generate_summary(df: pd.DataFrame, start_date: datetime, end_date: datetime)
     )
 
 
+def get_historical_df(data: list) -> pd.DataFrame:
+    df = pd.DataFrame.from_records(data)
+    df["priceUsd"] = df["priceUsd"].apply(lambda x: float(x))
+    df["date"] = pd.to_datetime(df["date"])
+    return df
+
+
 def main():
 
     data = fetch_asset_data()
