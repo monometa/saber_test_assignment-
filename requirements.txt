@@ -1,7 +1,6 @@
 pandas
 requests
 streamlit
-ipykernel
 plotly
 nbformat
 python-dateutil
