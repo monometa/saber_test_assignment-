@@ -39,6 +39,11 @@ def get_asset_id_by_symbol(assets: dict, symbol: str) -> str:
         if symbol == value: return key 
 
 
+def calculate_interval(start_date: datetime, end_date: datetime) -> str:
+    days_difference = (end_date - start_date).days
+    if days_difference > 14: return "d1"
+    elif days_difference <= 14 and days_difference >= 7: return "m30"
+    return "m15"
 
 
 @st.cache
@@ -47,6 +52,10 @@ def fetch_history_data(
     start_date: datetime = START_DATE_DEFAULT,
     end_date: datetime = END_DATE_DEFAULT,
 ) -> list:
+    interval = calculate_interval(start_date, end_date)
+    start_date_unix, end_date_unix = get_unix_time(start_date), get_unix_time(end_date)
+
+    url = f"https://api.coincap.io/v2/assets/{symbol}/history?interval={interval}&start={start_date_unix}&end={end_date_unix}"
     r = requests.request("GET", url, headers=HEADERS, data=PAYLOAD)
     raw_history_by_id = r.json()["data"]
     if not raw_history_by_id:
