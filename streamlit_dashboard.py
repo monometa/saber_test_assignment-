@@ -9,16 +9,14 @@ import requests
 import streamlit as st
 from dateutil.relativedelta import relativedelta
 
-PAYLOAD = {}
-HEADERS = {}
+PAYLOAD, HEADERS = {}, {}
 
 END_DATE_DEFAULT = datetime.now() - relativedelta(days=1)
 START_DATE_DEFAULT = END_DATE_DEFAULT - relativedelta(years=1)
-END_DATE_UNIX = int(time.mktime(END_DATE_DEFAULT.timetuple()) * 1000)
-START_DATE_UNIX = int(time.mktime(START_DATE_DEFAULT.timetuple()) * 1000)
 MIN_DATE = datetime.now() - relativedelta(years=11)
 
-st.title('Saber Interactive test assignment')
+st.title("Saber Interactive test assignment")
+
 
 @st.cache
 def fetch_asset_data(limit=5):
@@ -32,15 +30,14 @@ def get_unix_time(date):
     return int(time.mktime(date.timetuple()) * 1000)
 
 
-def get_asset_identifiers(data):
-    assets = {asset["id"]: asset["symbol"] for asset in data}
-    return assets
+    return {asset["id"]: asset["symbol"] for asset in data}
 
 
 def get_asset_id_by_symbol(assets, symbol):
     for key, value in assets.items():
-        if symbol == value:
-            return key
+        if symbol == value: return key 
+
+
 
 
 @st.cache
