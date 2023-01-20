@@ -19,21 +19,22 @@ st.title("Saber Interactive test assignment")
 
 
 @st.cache
-def fetch_asset_data(limit=5):
+def fetch_asset_data(limit: int = 5) -> list:
     url = f"https://api.coincap.io/v2/assets?limit={limit}"
     r = requests.request("GET", url, headers=HEADERS, data=PAYLOAD)
     raw_assets_data = r.json()["data"]
     return raw_assets_data
 
 
-def get_unix_time(date):
+def get_unix_time(date: datetime) -> int:
     return int(time.mktime(date.timetuple()) * 1000)
 
 
+def get_asset_identifiers(data: list) -> dict:
     return {asset["id"]: asset["symbol"] for asset in data}
 
 
-def get_asset_id_by_symbol(assets, symbol):
+def get_asset_id_by_symbol(assets: dict, symbol: str) -> str:
     for key, value in assets.items():
         if symbol == value: return key 
 
@@ -42,9 +43,10 @@ def get_asset_id_by_symbol(assets, symbol):
 
 @st.cache
 def fetch_history_data(
-    symbol, start_date_unix=START_DATE_UNIX, end_date_unix=END_DATE_UNIX
-):
-    url = f"https://api.coincap.io/v2/assets/{symbol}/history?interval=d1&start={start_date_unix}&end={end_date_unix}"
+    symbol: str,
+    start_date: datetime = START_DATE_DEFAULT,
+    end_date: datetime = END_DATE_DEFAULT,
+) -> list:
     r = requests.request("GET", url, headers=HEADERS, data=PAYLOAD)
     raw_history_by_id = r.json()["data"]
     if not raw_history_by_id:
@@ -52,12 +54,9 @@ def fetch_history_data(
     return raw_history_by_id
 
 
-def create_historical_fig(data, start_date, end_date):
-    df = pd.DataFrame.from_records(data)
-    df["date"] = pd.to_datetime(df["time"], unit="ms").dt.date
-    df = df[(df["date"] > start_date) & (df["date"] < end_date)]
-    fig = px.bar(
-        df, x="date", y="priceUsd", labels={"date": "TIME", "priceUsd": "PRICE"}
+def create_historical_fig(
+    df: pd.DataFrame, start_date: datetime, end_date: datetime
+) -> go.Figure:
     )
     return fig
 
