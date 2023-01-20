@@ -88,7 +88,7 @@ def create_historical_fig(
 def generate_summary(df: pd.DataFrame, start_date: datetime, end_date: datetime) -> str:
     first_el, last_el = float(df["priceUsd"].iloc[0]), float(df["priceUsd"].iloc[-1])
     changes = round(last_el - first_el, 3)
-    percent_changes = round(abs(last_el - first_el) * 100 / last_el, 2)
+    percent_changes = round((last_el / first_el ) * 100 - 100, 2) if changes >= 0 else round(100 - (last_el / first_el ) * 100, 2) 
     arrow = ":arrow_upper_right:" if changes >= 0 else ":arrow_lower_right:"
     sign = "+" if changes > 0 else ""
     return (
