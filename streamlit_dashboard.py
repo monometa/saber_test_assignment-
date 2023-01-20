@@ -66,7 +66,22 @@ def fetch_history_data(
 def create_historical_fig(
     df: pd.DataFrame, start_date: datetime, end_date: datetime
 ) -> go.Figure:
+    df = df[(df["date"].dt.date >= (start_date)) & (df["date"].dt.date <= end_date)]
+
+    ymin, ymax = float(df["priceUsd"].min()), float(df["priceUsd"].max())
+    reduction_factor, magnification_factor = ymin / ymax, ymax / ymin
+    ylim = [ymin * reduction_factor, ymax * magnification_factor]
+
+    fig = px.line(
+        df,
+        x="date",
+        y="priceUsd",
+        labels={"date": "TIME", "priceUsd": "PRICE"},
     )
+
+    fig.update_yaxes(range=[*ylim])
+    fig.update_yaxes(autorange=True)
+
     return fig
 
 
