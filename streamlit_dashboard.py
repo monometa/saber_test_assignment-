@@ -103,7 +103,8 @@ def main():
             "Date from",
             value=START_DATE_DEFAULT,
             min_value=MIN_DATE,
-            max_value=END_DATE_DEFAULT,
+            max_value=END_DATE_DEFAULT
+            - relativedelta(days=1),
         )
     with sidebar_layout[-1]:
         end_date_input = st.date_input(
